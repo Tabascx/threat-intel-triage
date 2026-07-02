@@ -1,4 +1,4 @@
-﻿# Threat Intel Triage
+markdown# Threat Intel Triage
 
 Herramienta de linea de comandos para el triaje rapido de IPs sospechosas. Consulta tres fuentes de inteligencia de amenazas en paralelo (VirusTotal, AbuseIPDB, AlienVault OTX), combina las senales en un veredicto unico y guarda un informe detallado en JSON.
 
@@ -7,19 +7,16 @@ Herramienta de linea de comandos para el triaje rapido de IPs sospechosas. Consu
 El primer paso de cualquier investigacion de un indicador de compromiso (IoC) es el triaje: revisar rapidamente si una IP es conocida como maliciosa antes de invertir tiempo en un analisis mas profundo. Hacerlo a mano significa abrir tres pestañas de navegador, copiar la IP tres veces y comparar resultados manualmente. Esta herramienta automatiza ese primer paso y lo reduce a un solo comando.
 
 ## Arquitectura
-python analizar.py <IP>
-|
-v
-consulta en paralelo:
-|-- VirusTotal API
-|-- AbuseIPDB API
-|-- AlienVault OTX API
-|
-v
-combina resultados --> veredicto (ALTO / MODERADO / SIN RIESGO)
-|
-v
-tabla en consola (rich) + informe JSON en informes/## Funcionalidades
+
+1. Ejecutas `python analizar.py <IP>`
+2. El script consulta en paralelo tres fuentes:
+   - VirusTotal API
+   - AbuseIPDB API
+   - AlienVault OTX API
+3. Combina los resultados en un veredicto unico: **ALTO RIESGO**, **RIESGO MODERADO** o **SIN SEÑALES DE RIESGO**
+4. Muestra una tabla en consola (con `rich`) y guarda un informe completo en JSON dentro de `informes/`
+
+## Funcionalidades
 
 - Consulta simultanea a tres fuentes de reputacion de IPs
 - Veredicto combinado que requiere coincidencia entre fuentes, no una sola senal aislada
@@ -57,7 +54,8 @@ Copia `.env.example` a `.env` y rellena tus claves:
 
 ```bash
 cp .env.example .env
-```VIRUSTOTAL_API_KEY=tu_clave
+```
+VIRUSTOTAL_API_KEY=tu_clave
 ABUSEIPDB_API_KEY=tu_clave
 OTX_API_KEY=tu_clave
 
@@ -91,14 +89,3 @@ Los tests cubren la logica de calculo del veredicto de forma aislada (sin llamar
 **Por que cada conector maneja sus propios errores por separado**: en produccion, las APIs externas fallan (timeouts, limites de cuota, mantenimiento). Si una fuente cae, el analisis no debe detenerse por completo: las otras dos siguen aportando senal, y el error se muestra de forma clara en el informe sin romper el flujo.
 
 **Por que las claves API viven en `.env` y no en el codigo**: exponer claves API en el codigo fuente es un riesgo de seguridad basico que cualquier repositorio publico en GitHub puede filtrar accidentalmente. El archivo `.env` real esta excluido via `.gitignore`; solo se versiona `.env.example` como plantilla.
-
-## Posibles mejoras futuras
-
-- Cache de resultados para evitar consultas repetidas a la misma IP en poco tiempo
-- Soporte para analizar un lote de IPs desde un archivo de texto
-- Exportacion de informes a CSV para reportes agregados
-- Integracion con Shodan para informacion de puertos/servicios expuestos
-
-## Autor
-
-Proyecto desarrollado como parte de la formacion en Desarrollo de Aplicaciones Web (DAW), explorando el rol de analista de Inteligencia de Amenazas (Threat Intelligence) dentro de un SOC.
