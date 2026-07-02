@@ -1,4 +1,4 @@
-markdown# Threat Intel Triage
+# Threat Intel Triage
 
 Herramienta de linea de comandos para el triaje rapido de IPs sospechosas. Consulta tres fuentes de inteligencia de amenazas en paralelo (VirusTotal, AbuseIPDB, AlienVault OTX), combina las senales en un veredicto unico y guarda un informe detallado en JSON.
 
